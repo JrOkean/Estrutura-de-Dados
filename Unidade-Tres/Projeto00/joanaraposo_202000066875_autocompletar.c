@@ -15,29 +15,42 @@ typedef enum  {
 typedef struct node {
     //char letra;
     struct node** filho; 
-    bool aux;
+    bool palavra_ornot;
 } node;
 
 node* alloc_node(){
-    node* new_node = malloc(sizeof(node));
+    node* new_node = malloc(sizeof(node)); //aloca espaço do tam do node
     new_node->filho = malloc(26* sizeof(char));
 
     for (size_t i = 0; i < 26; i++){
         new_node->filho[i] == NULL;
     };
     
-    new_node->aux = false;
+    new_node->palavra_ornot = false;
 
     return new_node;
 };
 
-void insere_node(node** root, char* palavra){
-    if (root == NULL){
-        *root = alloc_node();  
+typedef struct Tree_trie{
+    node* root;
+} Tree_trie;
+
+Tree_trie* criar_tree(){
+    Tree_trie* nova_tree = malloc(sizeof(Tree_trie));
+    nova_tree->root = NULL;
+    return nova_tree;
+};
+
+void insere_node(Tree_trie* Tree, char* palavra){
+    node* new_node = alloc_node();
+
+
+    if (Tree->root == NULL){
+        Tree->root = new_node;
     };
     
     unsigned char* texto = (unsigned char*)palavra;
-    node* temp = root;
+    node* temp = Tree->root;
     int len = strlen(palavra);
     
     for(size_t i = 0; i < len; i++){
@@ -46,10 +59,10 @@ void insere_node(node** root, char* palavra){
       };  
       temp = temp->filho[texto[i]];
     };
-    if (temp->aux){
+    if (temp->palavra_ornot){
         return false;
     } else {
-        temp->aux = true;
+        temp->palavra_ornot = true;
         return true;
     };
     
@@ -66,7 +79,6 @@ node* busca (node* an_no, char * p , int d) {
     return no;
 };
 
-
 typedef struct dados{
     int quant_termos;
     char termo[20];
@@ -76,6 +88,7 @@ typedef struct dados{
 
 int main(int argc, char* argv[]) {  
     dados d;
+    Tree_trie* global_tree = criar_tree();
 
     entrada = argv[1];
 	saida = argv[2];
